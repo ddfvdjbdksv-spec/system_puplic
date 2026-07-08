@@ -9,7 +9,7 @@
 //    5. أو: يُطبَّق تلقائياً بعد 10 ثوانٍ بدون تدخّل
 // ============================================================
 
-const CACHE_VERSION = 'lesson-management-system-pwa-v15';
+const CACHE_VERSION = 'alamin-pwa-v12';
 
 const APP_SHELL = [
   './',
@@ -22,6 +22,7 @@ const APP_SHELL = [
   './code-generator.js',
   './grade-mapping.js',
   './manifest.webmanifest',
+  './firebase-config.js',
   './app-icon-192.png',
   './app-icon-512.png',
   './app-icon-maskable-512.png',

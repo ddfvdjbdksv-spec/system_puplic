@@ -195,7 +195,7 @@ window.RBAC = RBAC;
 // بالكامل — كانت وظائف مساعدة لقسم "مزامنة المنصة للموظف" اللي اعتمد على Firebase
 
 /**
- * نظام إدارة الدروس v2.0 - Core Intelligence Engine
+ * أ. محمد سعد دويدار v2.0 - Core Intelligence Engine
  * Specialized for Mr. Mohamed's Education Center
  */
 
@@ -1740,7 +1740,7 @@ function showSection(sectionId, btnEl) {
         'receipts': 'وصولات الدفع', 'platform-activation': 'تفعيل كورسات المنصة',
         'employee-platform-sync': 'مزامنة المنصة التعليمية'
     };
-    document.getElementById('page-title').innerText = titles[sectionId] || 'نظام إدارة الدروس';
+    document.getElementById('page-title').innerText = titles[sectionId] || 'أ. محمد سعد دويدار';
 
     if (sectionId === 'shifts') renderShifts();
 
@@ -4453,7 +4453,7 @@ function addToQueue(studentId, type, customText = null) {
     const s = db.students.find(x => x.id === studentId);
     if (!s) return;
 
-    let text = customText || waTemplates[type] || "تنبيه من نظام إدارة الدروس - [[name]]";
+    let text = customText || waTemplates[type] || "تنبيه من أ. محمد سعد دويدار - [[name]]";
     text = text.replace(/\[\[name\]\]/g, s.name).replace(/\[\[points\]\]/g, s.points || 0);
     text += getTeacherSignatureLine();
 
@@ -6999,7 +6999,7 @@ function _printDailyTreasuryCurrentGroup() {
     const todayStrAr = new Date(todayStr).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const groupObj = db.groups.find(g => String(g.id) === String(currentGroupId));
     const gradeObj = (typeof gradesList !== 'undefined') ? gradesList.find(g => String(g.id) === String(currentGrade)) : null;
-    const profile = (typeof getProgramProfile === 'function') ? getProgramProfile() : { teacherName: 'نظام إدارة الدروس', centerName: 'نظام إدارة الدروس' };
+    const profile = (typeof getProgramProfile === 'function') ? getProgramProfile() : { teacherName: 'الأستاذ محمد سعد دويدار', centerName: 'أ. محمد سعد دويدار' };
 
     const paymentsRows = todayPayments.map((p, i) => {
         const student = db.students.find(s => s.id === p.studentId);
@@ -7059,7 +7059,7 @@ function _printDailyTreasuryCurrentGroup() {
         <body>
             <div class="header">
                 <h1>💰 كشف تحصيل اليوم</h1>
-                <p>${profile.centerName || 'نظام إدارة الدروس'} — ${profile.teacherName || 'نظام إدارة الدروس'}</p>
+                <p>${profile.centerName || 'أ. محمد سعد دويدار'} — ${profile.teacherName || 'الأستاذ محمد سعد دويدار'}</p>
                 <p>${todayStrAr}</p>
                 <p>${gradeObj ? gradeObj.name : ''}${groupObj ? ' — ' + groupObj.name : ''}</p>
             </div>
@@ -7100,7 +7100,7 @@ function _printDailyTreasuryCurrentGroup() {
                 </tbody>
             </table>
 
-            <div class="footer">طبع بواسطة نظام إدارة الدروس | ${new Date().toLocaleString('ar-EG')}</div>
+            <div class="footer">طبع بواسطة أ. محمد سعد دويدار | ${new Date().toLocaleString('ar-EG')}</div>
         </body>
         </html>
     `);
@@ -7113,7 +7113,7 @@ function _printDailyTreasuryCurrentGroup() {
 
 // ── طباعة كشف جميع المجموعات لليوم ──────────────────────────────────
 function _printDailyTreasuryAllGroups() {
-    const profile = (typeof getProgramProfile === 'function') ? getProgramProfile() : { teacherName: 'نظام إدارة الدروس', centerName: 'نظام إدارة الدروس' };
+    const profile = (typeof getProgramProfile === 'function') ? getProgramProfile() : { teacherName: 'الأستاذ محمد سعد دويدار', centerName: 'أ. محمد سعد دويدار' };
     const todayStrEn = new Date().toLocaleDateString('en-CA');
     const todayStrAr = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -7234,7 +7234,7 @@ function _printDailyTreasuryAllGroups() {
         <body>
             <div class="main-header">
                 <h1>🖨️ كشف تحصيل جميع المجموعات</h1>
-                <p>${profile.centerName || 'نظام إدارة الدروس'} — ${profile.teacherName || 'نظام إدارة الدروس'}</p>
+                <p>${profile.centerName || 'أ. محمد سعد دويدار'} — ${profile.teacherName || 'الأستاذ محمد سعد دويدار'}</p>
                 <p>${todayStrAr}</p>
             </div>
             <div class="grand-summary">
@@ -7256,7 +7256,7 @@ function _printDailyTreasuryAllGroups() {
                 </div>
             </div>
             ${groupSections}
-            <div class="footer">طبع بواسطة نظام إدارة الدروس | ${new Date().toLocaleString('ar-EG')}</div>
+            <div class="footer">طبع بواسطة أ. محمد سعد دويدار | ${new Date().toLocaleString('ar-EG')}</div>
         </body>
         </html>`);
     printWindow.document.close();
@@ -7317,7 +7317,7 @@ function printDailyTreasuryReport() {
         <body>
             <div class="header">
                 <h1>تقرير تحصيل الخزنة اليومي</h1>
-                <p>نظام إدارة الدروس</p>
+                <p>أ. محمد سعد دويدار - الأستاذ محمد سعد دويدار</p>
                 <p style="font-weight: 700;">${todayStrAr}</p>
             </div>
             
@@ -7342,7 +7342,7 @@ function printDailyTreasuryReport() {
                 <tbody>${rows}</tbody>
             </table>
             
-            <div class="footer">طبع بواسطة نظام إدارة الدروس | ${new Date().toLocaleString('ar-EG')}</div>
+            <div class="footer">طبع بواسطة أ. محمد سعد دويدار | ${new Date().toLocaleString('ar-EG')}</div>
         </body>
         </html>
     `);
@@ -7405,7 +7405,7 @@ function printSessionAttendance() {
                 </tbody>
             </table>
             <footer style="margin-top: 50px; text-align: center; font-size: 0.8rem; color: #666;">
-                تم استخراج التقرير بواسطة نظام إدارة الدروس - ${new Date().toLocaleString('ar-EG')}
+                تم استخراج التقرير بواسطة أ. محمد سعد دويدار - ${new Date().toLocaleString('ar-EG')}
             </footer>
         </body>
         </html>
@@ -7483,7 +7483,7 @@ function printArchivedSession(filter = 'all') {
             </div>
 
             <footer style="margin-top: 50px; text-align: center; font-size: 0.8rem; color: #999; border-top: 1px solid #eee; padding-top: 10px;">
-                نظام إدارة الدروس - أرشيف الجلسات الرقمي | استُخرج بتاريخ: ${new Date().toLocaleString('ar-EG')}
+                أ. محمد سعد دويدار - أرشيف الجلسات الرقمي | استُخرج بتاريخ: ${new Date().toLocaleString('ar-EG')}
             </footer>
         </body>
         </html>
@@ -8336,7 +8336,7 @@ function printMonthlyReceipt(paymentId, size = 'thermal') {
         </head>
         <body>
             <div class="center">
-                <h3 style="margin:5px 0; font-size:15px;">نظام إدارة الدروس</h3>
+                <h3 style="margin:5px 0; font-size:15px;">أ. محمد سعد دويدار</h3>
                 <div style="font-size:11px; color:#555;">${cycleTitle}</div>
             </div>
             <hr>
@@ -8479,7 +8479,7 @@ function _buildBulkReceiptCard(payment) {
     const student = db.students.find(s => s.id == payment.studentId);
     if (!student) return '';
 
-    const profile   = (typeof getProgramProfile === 'function') ? getProgramProfile() : { centerName: 'نظام إدارة الدروس' };
+    const profile   = (typeof getProgramProfile === 'function') ? getProgramProfile() : { centerName: 'أ. محمد سعد دويدار' };
     const cycleTitle = getReceiptCycleTitle(payment);
     const dateStr    = new Date(payment.date).toLocaleDateString('ar-EG');
     const gradeName  = typeof gradeLabel === 'function' ? gradeLabel(student.grade) : (student.grade || '—');
@@ -8489,7 +8489,7 @@ function _buildBulkReceiptCard(payment) {
     return `
         <div class="bulk-receipt-card">
             <div class="bc-header">
-                <span class="bc-center">${profile.centerName || 'نظام إدارة الدروس'}</span>
+                <span class="bc-center">${profile.centerName || 'أ. محمد سعد دويدار'}</span>
                 <span class="bc-num">#${payment.id}</span>
             </div>
             <div class="bc-row"><span class="bc-label">الطالب</span><span class="bc-value">${student.name}</span></div>
@@ -9120,7 +9120,7 @@ function sendMonthlyReportWhatsApp() {
 
     // ── 4. بناء نص الرسالة ──────────────────────────────────
     const _profileWA = getProgramProfile();
-    // 🔧 الاسم مثبّت دائماً "نظام إدارة الدروس" — لا يعتمد على الإعدادات المحفوظة
+    // 🔧 الاسم مثبّت دائماً "الأستاذ محمد سعد دويدار" — لا يعتمد على الإعدادات المحفوظة
     const teacherLine = {
         name: TEACHER_FIXED_NAME,
         spec: _profileWA.specialization || 'أستاذ التاريخ والجغرافيا'
@@ -9182,12 +9182,12 @@ function renderMonthlyReportBody() {
     // ✅ إصلاح: نفس منطق sendMonthlyReportWhatsApp — استخدام حدود الدورة
     // الفعلية بدل حساب حدود الشهر الميلادي من جديد.
     const { start, end } = period;
-    const profile = (typeof getProgramProfile === 'function') ? getProgramProfile() : { teacherName: 'نظام إدارة الدروس', centerName: 'نظام إدارة الدروس' };
+    const profile = (typeof getProgramProfile === 'function') ? getProgramProfile() : { teacherName: 'الأستاذ محمد سعد دويدار', centerName: 'أ. محمد سعد دويدار' };
     const groupObj = db.groups.find(g => String(g.id) === String(s.groupId));
     const gradeObj = (typeof gradesList !== 'undefined') ? gradesList.find(g => String(g.id) === String(s.grade)) : null;
 
     // ── Header info ──
-    document.getElementById('report-teacher-name').innerText = `المدرّس: ${profile.teacherName || 'نظام إدارة الدروس'} — ${profile.specialization || 'أستاذ التاريخ والجغرافيا'}`;
+    document.getElementById('report-teacher-name').innerText = `المدرّس: ${profile.teacherName || 'الأستاذ محمد سعد دويدار'} — ${profile.specialization || 'أستاذ التاريخ والجغرافيا'}`;
     document.getElementById('report-date-range').innerText = `للفترة: ${period.label}`;
     document.getElementById('rep-st-name').innerText = s.name;
     document.getElementById('rep-st-code').innerText = s.qrCode || '---';
@@ -9772,7 +9772,7 @@ async function importData(input) {
                 console.log('✅ تم قراءة الملف كـ JSON مباشر');
             } catch (_) {}
 
-            // 🔧 محاولة 2: window.edu_initial_data = {...}; (الصيغة القياسية لنظام إدارة الدروس)
+            // 🔧 محاولة 2: window.edu_initial_data = {...}; (الصيغة القياسية لأ. محمد سعد دويدار)
             // greedy match لضمان التقاط الـ JSON كاملاً حتى آخر }
             if (!parsedData) {
                 try {
@@ -9838,7 +9838,7 @@ async function importData(input) {
             }
 
             if (!parsedData || typeof parsedData !== 'object') {
-                throw new Error('لم يتم التعرف على صيغة الملف. تأكد أن الملف هو data.js الصادر من نظام إدارة الدروس.');
+                throw new Error('لم يتم التعرف على صيغة الملف. تأكد أن الملف هو data.js الصادر من أ. محمد سعد دويدار.');
             }
 
             // ⭐ طباعة معلومات تشخيصية
@@ -9871,7 +9871,7 @@ async function importData(input) {
                 '❌ فشل استيراد النسخة الاحتياطية\n\n' +
                 'السبب: ' + errMsg + '\n\n' +
                 'تأكد من الآتي:\n' +
-                '• الملف هو data.js الذي صدّره نظام إدارة الدروس مباشرة\n' +
+                '• الملف هو data.js الذي صدّره أ. محمد سعد دويدار مباشرة\n' +
                 '• اسم الملف لا يهم — data.js أو data (2).js كلها مقبولة\n' +
                 '• لم يتم فتح الملف وتعديله يدوياً\n' +
                 '• حجم الملف أكبر من 1 كيلوبايت'
@@ -10152,8 +10152,8 @@ function initExperienceEnhancements() {
 function getProgramProfile() {
     if (!db._settings.appProfile) {
         db._settings.appProfile = {
-            centerName: 'نظام إدارة الدروس',
-            teacherName: 'نظام إدارة الدروس',
+            centerName: 'أ. محمد سعد دويدار',
+            teacherName: 'الأستاذ محمد سعد دويدار',
             specialization: 'أستاذ التاريخ والجغرافيا',
             phone: ''
         };
@@ -10165,13 +10165,13 @@ function getProgramProfile() {
 
     // 🔧 إصلاح: تصحيح تلقائي لأي قيمة خاطئة محفوظة سابقاً باسم المدرّس
     // (مثل "مدير عام"/"المدير العام" أو حقل فارغ). اسم المدرّس الصحيح دائماً
-    // هو "نظام إدارة الدروس" — لا يجوز أن يظهر أي لقب وظيفي عام مكانه.
+    // هو "الأستاذ محمد سعد دويدار" — لا يجوز أن يظهر أي لقب وظيفي عام مكانه.
     // ملحوظة: التحقق يعتمد على وجود كلمة "مدير" كجزء من النص فقط (بدون تقييد
     // بما يليها) حتى يلتقط كل الصيغ: "مدير"، "المدير"، "مدير عام"، "المدير العام".
     const isBadValue = (v) => !v || /مدير/.test(String(v).trim());
     let fixedSomething = false;
     if (isBadValue(db._settings.appProfile.teacherName)) {
-        db._settings.appProfile.teacherName = 'نظام إدارة الدروس';
+        db._settings.appProfile.teacherName = 'الأستاذ محمد سعد دويدار';
         fixedSomething = true;
     }
     if (isBadValue(db._settings.appProfile.specialization)) {
@@ -10187,10 +10187,10 @@ function getProgramProfile() {
 }
 
 // نص هوية المدرّس الجاهز للإضافة أسفل أي رسالة (واتساب / SMS)
-// 🔧 إصلاح نهائي: الاسم مثبّت مباشرة "نظام إدارة الدروس" ولا يعتمد على
+// 🔧 إصلاح نهائي: الاسم مثبّت مباشرة "الأستاذ محمد سعد دويدار" ولا يعتمد على
 // أي قيمة محفوظة في الإعدادات، حتى لا يظهر أبداً أي لقب خاطئ (مثل "المدير العام")
 // بغض النظر عمّا هو مخزَّن. التخصص وحده قابل للتخصيص من شاشة الإعدادات.
-const TEACHER_FIXED_NAME = 'نظام إدارة الدروس';
+const TEACHER_FIXED_NAME = 'الأستاذ محمد سعد دويدار';
 function getTeacherSignatureLine() {
     const profile = getProgramProfile();
     const spec = profile.specialization || 'أستاذ التاريخ والجغرافيا';
@@ -10237,7 +10237,7 @@ function getFinancialEditLog() {
 function _currentEditorLabel() {
     const profile = getProgramProfile();
     const roleLabel = (typeof RBAC !== 'undefined' && RBAC.isAdmin && RBAC.isAdmin()) ? 'المشرف' : 'مستخدم';
-    return `${roleLabel} — ${profile.teacherName || 'نظام إدارة الدروس'}`;
+    return `${roleLabel} — ${profile.teacherName || 'الأستاذ محمد سعد دويدار'}`;
 }
 
 /**
@@ -10341,7 +10341,7 @@ function viewFinancialEditLog() {
             th { background:#4f46e5; color:#fff; }
         </style></head><body>
         <h2><i class="fas fa-history"></i> سجل التعديلات المالية على الأرشيف</h2>
-        <div class="sub">${profile.teacherName || 'نظام إدارة الدروس'} — ${profile.specialization || 'أستاذ التاريخ والجغرافيا'}</div>
+        <div class="sub">${profile.teacherName || 'الأستاذ محمد سعد دويدار'} — ${profile.specialization || 'أستاذ التاريخ والجغرافيا'}</div>
         <table>
             <thead><tr>
                 <th>اسم الطالب</th><th>الشهر / الدورة</th><th>الحالة القديمة</th><th>الحالة الجديدة</th>
@@ -10361,10 +10361,10 @@ function applyProgramProfile() {
     document.title = `${profile.centerName} | نظام الإدارة`;
 
     const logo = document.querySelector('.logo');
-    if (logo) logo.innerHTML = `<i class="fas fa-book-open"></i> ${profile.centerName || 'نظام إدارة الدروس'}`;
+    if (logo) logo.innerHTML = `<i class="fas fa-book-open"></i> ${profile.centerName || 'أ. محمد سعد دويدار'}`;
 
     const userName = document.querySelector('.user-profile span');
-    if (userName) userName.innerText = profile.teacherName || 'نظام إدارة الدروس';
+    if (userName) userName.innerText = profile.teacherName || 'الأستاذ محمد سعد دويدار';
 
     const userSpec = document.querySelector('.user-profile .user-specialization');
     if (userSpec) userSpec.innerText = profile.specialization || 'أستاذ التاريخ والجغرافيا';
@@ -10584,8 +10584,8 @@ function renderProgramSettings() {
 
 function saveProgramSettings() {
     const profile = getProgramProfile();
-    profile.centerName = document.getElementById('settings-center-name')?.value.trim() || 'نظام إدارة الدروس';
-    profile.teacherName = document.getElementById('settings-teacher-name')?.value.trim() || 'نظام إدارة الدروس';
+    profile.centerName = document.getElementById('settings-center-name')?.value.trim() || 'أ. محمد سعد دويدار';
+    profile.teacherName = document.getElementById('settings-teacher-name')?.value.trim() || 'الأستاذ محمد سعد دويدار';
     profile.specialization = document.getElementById('settings-specialization')?.value.trim() || 'أستاذ التاريخ والجغرافيا';
     profile.phone = document.getElementById('settings-phone')?.value.trim() || '';
 
@@ -10728,7 +10728,7 @@ function printPlatformCourseCards() {
       <div class="grid">
         ${rows.map(item => `
           <div class="card">
-            <div class="title">نظام إدارة الدروس - كود تفعيل كورس</div>
+            <div class="title">أ. محمد سعد دويدار - كود تفعيل كورس</div>
             <div class="student">${item.linkedStudentName || 'طالب غير محدد'}</div>
             <div class="meta">${platformGradeLabel(item.grade)} | ${item.courseTitle || '-'}</div>
             <div class="code">${item.code || '-'}</div>
@@ -10933,7 +10933,7 @@ const exposures = {
         snapshot.ls = lsSnap;
 
         const dataJsContent = `/**
- * نظام إدارة الدروس Data Storage File - للبيع والنقل
+ * أ. محمد سعد دويدار Data Storage File - للبيع والنقل
  * Created: ${new Date().toLocaleString()}
  */
 window.edu_initial_data = ${JSON.stringify(snapshot, null, 4)};`;
@@ -11123,7 +11123,7 @@ function generatePrintableIDCards(students, mode = 'normal') {
     const printWindow = window.open('', '_blank');
     const isThermal = mode === 'thermal';
     const profile = (typeof getProgramProfile === 'function') ? getProgramProfile() : {};
-    const teacherName = profile.teacherName || 'نظام إدارة الدروس';
+    const teacherName = profile.teacherName || 'الأستاذ محمد سعد دويدار';
     const teacherSpec = profile.specialization || 'أستاذ التاريخ والجغرافيا';
 
     // Get Thermal Config
@@ -11498,7 +11498,7 @@ function printAttendanceSheets() {
     <body>
         <div class="sheet-header">
             <h1>كشوف حضور وغياب الطلاب</h1>
-            <p>نظام إدارة الدروس</p>
+            <p>أ. محمد سعد دويدار - الأستاذ محمد سعد دويدار</p>
             <p>السنة الدراسية: ${gradeName} | تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG')}</p>
         </div>
     `;
@@ -11586,7 +11586,7 @@ function printStudentsData() {
     <body onload="window.print()">
         <div class="header">
             <h1>سجل بيانات الطلاب التفصيلي</h1>
-            <p>نظام إدارة الدروس</p>
+            <p>أ. محمد سعد دويدار - الأستاذ محمد سعد دويدار</p>
             <p>المرحلة: ${gradeBadge} | إجمالي الطلاب: ${students.length}</p>
         </div>
         <table>

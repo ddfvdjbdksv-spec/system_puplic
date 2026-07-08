@@ -48,5 +48,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, host, () => {
-    console.log(`Lesson Management System (نظام إدارة الدروس) is running at http://${host}:${port}`);
+    console.log(`Al-Amin is running at http://${host}:${port}`);
 });
