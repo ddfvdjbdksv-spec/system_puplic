@@ -48,5 +48,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, host, () => {
-    console.log(`Al-Amin is running at http://${host}:${port}`);
+    console.log(`Markaz Mohamed Saad Doweidar (أ. محمد سعد دويدار) is running at http://${host}:${port}`);
 });

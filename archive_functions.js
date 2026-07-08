@@ -133,6 +133,7 @@ function viewArchivedCycle(cycleId) {
         } else {
             // د. الطلاب غير الدافعين
             unpaidList.push({
+                id: s.id,
                 name: s.name,
                 code: s.qrCode
             });
@@ -447,12 +448,16 @@ function viewArchivedCycle(cycleId) {
                 <!-- 4. الطلاب غير الدافعين -->
                 <div id="unpaid-tab" class="tab-content">
                     <h3 style="margin-bottom:15px; border-right:4px solid var(--danger); padding-right:10px; color:var(--danger)">قائمة الطلاب المتأخرين عن الدفع</h3>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:10px;">
+                        <i class="fas fa-info-circle"></i> يمكنك الآن تسجيل سداد أي طالب متأخر بأثر رجعي عن هذا الشهر مباشرة من هنا، وستتحدث كل التقارير والإحصائيات تلقائياً.
+                    </p>
                     <table>
                         <thead>
                             <tr>
                                 <th>اسم الطالب</th>
                                 <th>كود الطالب</th>
                                 <th>الحالة</th>
+                                <th class="no-print">إجراء</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -461,14 +466,31 @@ function viewArchivedCycle(cycleId) {
                                     <td><strong>${item.name}</strong></td>
                                     <td style="font-family:monospace; color:var(--text-muted);">${item.code}</td>
                                     <td style="color:var(--danger); font-weight:700;"><i class="fas fa-exclamation-triangle"></i> لم يسدد أي اشتراك</td>
+                                    <td class="no-print">
+                                        <button class="tab-btn" style="background:var(--accent); color:#fff; padding:6px 14px;" onclick="_markArchivedStudentPaid(${cycle.id}, ${item.id})">
+                                            <i class="fas fa-check-circle"></i> تسجيل السداد الآن
+                                        </button>
+                                    </td>
                                 </tr>
-                            `).join('') || '<tr><td colspan="3" style="text-align:center; padding:2rem; color:var(--accent); font-weight:700;"><i class="fas fa-trophy"></i> جميع الطلاب قاموا بالسداد بنجاح!</td></tr>'}
+                            `).join('') || '<tr><td colspan="4" style="text-align:center; padding:2rem; color:var(--accent); font-weight:700;"><i class="fas fa-trophy"></i> جميع الطلاب قاموا بالسداد بنجاح!</td></tr>'}
                         </tbody>
                     </table>
                 </div>
             </div>
 
             <script>
+                function _markArchivedStudentPaid(cycleId, studentId) {
+                    if (!window.opener || window.opener.closed) {
+                        alert('تعذر الاتصال بالنافذة الرئيسية للبرنامج. أعد فتح الأرشيف من الصفحة الرئيسية.');
+                        return;
+                    }
+                    if (!confirm('هل تريد تسجيل سداد هذا الطالب عن هذا الشهر الآن؟ سيتم تحديث كل التقارير تلقائياً.')) return;
+                    const ok = window.opener.recordArchivedMonthPayment(cycleId, studentId);
+                    if (ok) {
+                        window.opener.viewArchivedCycle(cycleId);
+                        window.close();
+                    }
+                }
                 function openTab(evt, tabName) {
                     var i, tabcontent, tablinks;
                     tabcontent = document.getElementsByClassName("tab-content");

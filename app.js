@@ -2219,6 +2219,7 @@ async function renderStudents() {
                     <button class="btn" title="تقرير شامل" style="padding:5px 10px; background:#3b82f6; color:white;" onclick="generateMonthlyReport(${s.id})"><i class="fas fa-file-invoice"></i></button>
                     <button class="btn" title="الملف الشخصي" style="padding:5px 10px;" onclick="viewDetailedProfile(${s.id})"><i class="fas fa-user-graduate"></i></button>
                     <button class="btn" title="تعديل" style="padding:5px 10px; background:var(--accent); color:white;" onclick="editStudent(${s.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn" title="نقل لمجموعة أخرى" style="padding:5px 10px; background:#8b5cf6; color:white;" onclick="showTransferStudentModal(${s.id})"><i class="fas fa-exchange-alt"></i></button>
                     <button class="btn" title="حذف" style="padding:5px 10px; color:var(--danger);" onclick="deleteStudent(${s.id})"><i class="fas fa-trash"></i></button>
                 </div>
             </td>
@@ -2382,6 +2383,7 @@ function renderGroupStudents() {
             <td>
                 <div style="display:flex; gap:8px;">
                     <button class="btn" style="padding:4px 8px; font-size:0.8rem;" onclick="viewDetailedProfile(${s.id})"><i class="fas fa-user"></i></button>
+                    <button class="btn" title="نقل لمجموعة أخرى" style="padding:4px 8px; font-size:0.8rem; background:#8b5cf6; color:white;" onclick="showTransferStudentModal(${s.id})"><i class="fas fa-exchange-alt"></i></button>
                     <button class="btn" style="padding:4px 8px; font-size:0.8rem; color:var(--danger);" onclick="removeStudentFromGroup(${s.id})"><i class="fas fa-user-minus"></i></button>
                 </div>
             </td>
@@ -10784,7 +10786,11 @@ window.printPlatformCourseCards = printPlatformCourseCards;
 window.initPlatformCodesSection = initPlatformCodesSection;
 
 // Unified Application Entry Point
-window.onload = async () => {
+// ⚠️ لا نستخدم window.onload لأنه ينتظر اكتمال كل موارد الصفحة (خطوط، مكتبات CDN خارجية...)
+// وعلى أجهزة بدون إنترنت حقيقي (مثل بعض أنظمة الهاردوير/الدونجل التي تظهر كمتصلة لكنها بلا DNS فعلي)
+// قد تتأخر أو تتجمّد محاولات تحميل هذه الموارد الخارجية لفترة طويلة، فيتجمد التطبيق معها.
+// DOMContentLoaded يعتمد فقط على تحليل HTML/JS المحلي، ولا ينتظر أي مورد خارجي أبداً.
+async function _bootMainApp() {
     try {
         await ensureAppLoaded();
     } catch (err) {
@@ -10851,7 +10857,14 @@ window.onload = async () => {
             }
         });
     }
-};
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _bootMainApp);
+} else {
+    // الصفحة اتحللت خلاص (السكريبت نفسه بيتحمل في آخر body)
+    _bootMainApp();
+}
 
 // Global Exposure (Ensure all functions are accessible from HTML)
 const exposures = {
@@ -11147,18 +11160,19 @@ function generatePrintableIDCards(students, mode = 'normal') {
             '.barcode-area { margin-top: 5px; width: 100%; display: flex; justify-content: center; }' +
             '.barcode { width: 95% !important; max-width: ' + (tw - 10) + 'mm; }'
             :
-            '.page { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; page-break-after: always; }' +
-            '.card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 0; height: 55mm; display: flex; flex-direction: column; position: relative; box-sizing: border-box; background: #fff; page-break-inside: avoid; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }' +
+            '@page { size: A4; margin: 8mm; }' +
+            '.page { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: min-content; gap: 4mm; page-break-after: always; }' +
+            '.card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 0; min-height: 56mm; display: flex; flex-direction: column; position: relative; box-sizing: border-box; background: #fff; page-break-inside: avoid; break-inside: avoid; overflow: visible; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }' +
             '.card-header { background: linear-gradient(135deg, #4f46e5, #4338ca); color: #fff; padding: 8px 12px; }' +
             '.card-header .teacher-name { font-weight: 800; font-size: 0.95rem; line-height: 1.3; }' +
             '.card-header .teacher-spec { font-size: 0.65rem; opacity: 0.9; }' +
             '.card-body { padding: 10px 12px; display: flex; flex-direction: column; flex: 1; }' +
             '.info-row { font-size: 0.85rem; margin-bottom: 5px; color: #475569; }' +
             '.info-row b { color: #1e293b; }' +
-            '.barcode-area { margin-top: auto; text-align: center; background: #f8fafc; padding: 5px; border-radius: 5px; }' +
-            '.barcode { width: 100% !important; height: auto !important; }' +
+            '.barcode-area { margin-top: auto; text-align: center; background: #f8fafc; padding: 5px; border-radius: 5px; padding-bottom: 10px; }' +
+            '.barcode { width: 100% !important; height: auto !important; display: block !important; }' +
             '.grade-badge { position: absolute; top: 8px; left: 12px; font-size: 0.6rem; background: rgba(255,255,255,0.2); color: #fff; padding: 2px 8px; border-radius: 4px; }' +
-            '@media print { body { padding: 0; } .page { padding: 10mm; } }'
+            '@media print { body { padding: 0; margin: 0; } .page { padding: 0; } }'
         ) +
         '</style></head><body>';
 
@@ -11231,8 +11245,19 @@ function generatePrintableIDCards(students, mode = 'normal') {
         'function initBarcodes() {' +
         '  if (typeof JsBarcode === "undefined") { setTimeout(initBarcodes, 50); return; }' +
         '  const barcodes = document.querySelectorAll(".barcode");' +
-        '  barcodes.forEach(el => { try { JsBarcode(el).init(); } catch(e){ console.error(e); } });' +
-        '  setTimeout(() => { window.print(); window.close(); }, 500);' +
+        '  barcodes.forEach(function(el) {' +
+        '    try {' +
+        '      JsBarcode(el).init();' +
+        '      var bbox = el.getBBox();' +
+        '      var pad = 4;' +
+        '      var vx = bbox.x - pad, vy = bbox.y - pad, vw = bbox.width + pad * 2, vh = bbox.height + pad * 2;' +
+        '      el.setAttribute("viewBox", vx + " " + vy + " " + vw + " " + vh);' +
+        '      el.removeAttribute("width");' +
+        '      el.removeAttribute("height");' +
+        '      el.setAttribute("preserveAspectRatio", "xMidYMid meet");' +
+        '    } catch(e){ console.error(e); }' +
+        '  });' +
+        '  setTimeout(function() { window.print(); window.close(); }, 500);' +
         '}' +
         'window.onload = initBarcodes;' +
         '</script></body></html>';
@@ -11319,9 +11344,7 @@ function checkAppPassword(val) {
             }
             RBAC.applyToUI();
 
-            if (typeof startBookingAutoSync === 'function') {
-                setTimeout(startBookingAutoSync, 3000);
-            }
+            // ✅ تم إلغاء أي مزامنة تلقائية بعد تسجيل الدخول — المزامنة تتم فقط يدوياً من أزرارها المخصصة
             // الموظف يروح الحضور مباشرة، المشرف يروح الداشبورد
             if (role === 'employee') {
                 setTimeout(() => showSection('attendance'), 2200);

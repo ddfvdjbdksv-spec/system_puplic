@@ -18,15 +18,9 @@ let platformSubSelectedCourses = [];
 // Helpers
 // ============================================
 
-/** هل يوجد اتصال بالإنترنت فعلياً (وليس فقط navigator.onLine) */
+/** ✅ تم فصل الاتصال بـ Firebase نهائياً — الوحدة دلوقتي أوفلاين بالكامل دايمًا */
 async function isReallyOnline() {
-    if (!navigator.onLine) return false;
-    try {
-        const ready = await ensureFirebaseInitialized();
-        return !!ready;
-    } catch (e) {
-        return false;
-    }
+    return false;
 }
 
 /** قائمة كورسات المنصة المتاحة للصف الحالي (أو الكل إن لم يوجد صف) */
@@ -306,10 +300,7 @@ function populateCycleCourseSelect() {
 
     if (!courses.length) {
         select.innerHTML = `<option value="">-- لا توجد كورسات، اضغط "تحديث الكورسات" أولاً --</option>`;
-        // جلب تلقائي إذا كان الإنترنت متاحاً
-        if (navigator.onLine && typeof refreshPlatformCourses === 'function') {
-            refreshPlatformCourses().then(() => populateCycleCourseSelect());
-        }
+        // ✅ لا يوجد جلب تلقائي هنا — التحديث يتم فقط يدوياً عبر زر "تحديث الكورسات" / "مزامنة مع المنصة"
         return;
     }
 
@@ -594,8 +585,7 @@ async function confirmSubscriptionSelection(studentId) {
 
     // تحديث الواجهات المرتبطة
     if (typeof renderFinances === 'function') renderFinances();
-    if (typeof renderSubscriptionsTables === 'function') renderSubscriptionsTables();
-    if (typeof _subsRenderTable === 'function') _subsRenderTable();
+    if (typeof renderMonthlySubscriptionTables === 'function') renderMonthlySubscriptionTables();
     if (typeof updateDashboardStats === 'function') updateDashboardStats();
     if (typeof openSmartCard === 'function') openSmartCard(studentId);
 
@@ -680,55 +670,12 @@ async function recordPlatformSubscription(student, coursesInput) {
  * يرسل مجموعة من سجلات الاشتراك إلى Firebase ويحدّث حالة المزامنة محلياً.
  * يعيد { success, syncedCount }
  */
+/**
+ * ✅ تم إلغاء الرفع لـ Firebase نهائياً — السجلات تفضل محفوظة محلياً فقط
+ * (sync_status هيفضل 0 دايمًا لأنه مفيش قاعدة بيانات سحابية تُرفع ليها).
+ */
 async function syncPlatformSubscriptionRecords(records) {
-    try {
-        const firebaseReady = await ensureFirebaseInitialized();
-        if (!firebaseReady) return { success: false, syncedCount: 0 };
-
-        let synced = 0;
-        for (const record of records) {
-            try {
-                await window.db.collection('platform_subscriptions').doc(record.id).set({
-                    studentId: String(record.student_id),
-                    studentCode: record.studentCode,
-                    courseId: record.course_id,
-                    courseTitle: record.course_title,
-                    amount: record.amount,
-                    subscriptionDate: record.payment_date.split('T')[0],
-                    subscriptionSource: 'center',
-                    paymentStatus: 'paid',
-                    paid: true,
-                    offlineStudentId: record.student_id,
-                    createdAt: record.created_at
-                }, { merge: true });
-
-                // إضافة الطالب لقائمة المشتركين في الكورس
-                await window.db.collection('platform_courses').doc(String(record.course_id))
-                    .collection('subscribers').doc(String(record.studentCode)).set({
-                        studentCode: record.studentCode,
-                        studentId: String(record.student_id),
-                        subscriptionDate: record.payment_date.split('T')[0],
-                        subscriptionSource: 'center',
-                        paid: true
-                    }, { merge: true });
-
-                record.sync_status = 1;
-                synced++;
-            } catch (e) {
-                console.error('Failed to sync subscription record', record.id, e);
-            }
-        }
-
-        // تحديث الحالة محلياً
-        if (synced > 0) {
-            await StorageEngine.save('platformSubscriptions', records.filter(r => r.sync_status === 1));
-        }
-
-        return { success: synced === records.length, syncedCount: synced };
-    } catch (err) {
-        console.error('syncPlatformSubscriptionRecords failed', err);
-        return { success: false, syncedCount: 0 };
-    }
+    return { success: false, syncedCount: 0 };
 }
 
 /**
@@ -1005,18 +952,11 @@ function showSyncResultsModal(results, errors) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // مزامنة تلقائية عند عودة الاتصال
-    window.addEventListener('online', () => {
-        showNotification('🌐 تم استرجاع الاتصال بالإنترنت. جاري مزامنة الاشتراكات المعلّقة...', 'info');
-        setTimeout(syncPendingPlatformSubscriptions, 1500);
-    });
+    // ✅ تم إلغاء المزامنة التلقائية نهائياً (لا listener على 'online' ولا setInterval دوري).
+    // المزامنة الآن تتم حصرياً عند الضغط اليدوي على أزرار المزامنة المخصصة
+    // (مثل "مزامنة مع المنصة" و "مزامنة الاشتراكات المعلّقة").
 
-    // محاولة مزامنة دورية كل 5 دقائق إن وُجد اتصال
-    platformSubAutoSyncTimer = setInterval(() => {
-        syncPendingPlatformSubscriptions();
-    }, 5 * 60 * 1000);
-
-    // عرض شارة الاشتراكات المعلقة بعد تحميل البيانات
+    // عرض شارة الاشتراكات المعلقة بعد تحميل البيانات (محلي بالكامل، لا يتصل بالشبكة)
     setTimeout(updatePendingSyncBadge, 2000);
 });
 
@@ -1149,8 +1089,6 @@ async function payLessonDirect(studentId) {
     showNotification(`✅ تم تسجيل اشتراك الدرس لـ ${s.name} (${payment.amount} ج.م)`, 'success');
     if (typeof playSound === 'function') playSound('success');
     if (typeof renderFinances === 'function') renderFinances();
-    if (typeof renderSubscriptionsTables === 'function') renderSubscriptionsTables();
-    if (typeof _subsRenderTable === 'function') _subsRenderTable();
     if (typeof updateDashboardStats === 'function') updateDashboardStats();
     if (typeof openSmartCard === 'function') openSmartCard(studentId);
     if (typeof showReceiptSelectionModal === 'function') showReceiptSelectionModal(payment.id);
@@ -1184,8 +1122,6 @@ async function payPlatformDirect(studentId) {
         if (typeof playSound === 'function') playSound('success');
 
         if (typeof renderFinances === 'function') renderFinances();
-        if (typeof renderSubscriptionsTables === 'function') renderSubscriptionsTables();
-        if (typeof _subsRenderTable === 'function') _subsRenderTable();
         if (typeof updateDashboardStats === 'function') updateDashboardStats();
         if (typeof openSmartCard === 'function') openSmartCard(studentId);
         updatePendingSyncBadge();
@@ -1229,8 +1165,6 @@ async function confirmPlatformOnlyPayment(studentId) {
 
     toggleModal('platform-course-select-modal', false);
     if (typeof renderFinances === 'function') renderFinances();
-    if (typeof renderSubscriptionsTables === 'function') renderSubscriptionsTables();
-    if (typeof _subsRenderTable === 'function') _subsRenderTable();
     if (typeof updateDashboardStats === 'function') updateDashboardStats();
     if (typeof openSmartCard === 'function') openSmartCard(studentId);
     updatePendingSyncBadge();
